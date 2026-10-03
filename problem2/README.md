@@ -2,6 +2,8 @@
 
 A currency swap form: pick two tokens, enter an amount, and see the converted amount from live USD prices.
 
+**Live demo:** https://fullstack-challenge-2026.vercel.app/ (add `?fail` to the URL to see a failed swap)
+
 ```bash
 npm install
 npm run dev        # http://localhost:5173
@@ -33,7 +35,8 @@ I started from my own boilerplate, [`react-vite-base`](https://github.com/mikeng
 ```
 src/
 ├── lib/swap.ts               # pure logic: price dedup, exchange rate, output amount, formatting, wallet balances
-├── lib/swap.test.ts
+├── lib/swap.test.ts          # unit tests for the pure logic
+├── pages/HomePage.test.tsx   # UI tests: conversion, Max, balance check, loading, success, failure
 ├── services/token.service.ts # fetches the price feed
 ├── services/swap.service.ts  # mock swap backend (1.5 s delay, `?fail` to simulate an error)
 ├── stores/wallet.store.ts    # mock wallet balances (Zustand, persisted)
