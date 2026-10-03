@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DOCS_ENABLED: 'true'
+    volumes:
+      - sqlite-data:/data # the SQLite file survives container restarts
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
