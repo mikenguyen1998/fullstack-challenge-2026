@@ -6,7 +6,7 @@ The infrastructure (config, logging, security middleware, validation, error hand
 
 ## TL;DR
 
-- **Run it:** `npm install && cp .env.example .env && npm run db:migrate && npm run db:seed && npm run dev`, then open http://localhost:3000/docs. Or just `docker compose up --build`.
+- **Run it:** `cp .env.example .env && npm install && npm run db:migrate && npm run db:seed && npm run dev`, then open http://localhost:3000/docs. Or just `docker compose up --build`.
 - **The CRUD code is in [`src/modules/resource/`](./src/modules/resource)** (routes → controller → service, Zod schemas). Everything else is infrastructure from my boilerplate.
 - **Beyond the brief:** validation (422), consistent error format, case/accent-insensitive search, pagination, OpenAPI docs, integration tests, Docker.
 
@@ -17,8 +17,8 @@ The infrastructure (config, logging, security middleware, validation, error hand
 ## Setup
 
 ```bash
-npm install            # also runs `prisma generate` (client goes to src/generated/prisma)
 cp .env.example .env   # DATABASE_URL="file:./prisma/dev.db"
+npm install            # also runs `prisma generate` (client goes to src/generated/prisma)
 npm run db:migrate     # creates prisma/dev.db and applies migrations
 npm run db:seed        # optional: 15 sample resources
 ```
