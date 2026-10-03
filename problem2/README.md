@@ -48,4 +48,4 @@ src/
 
 ## AI usage
 
-See the [AI usage](../README.md#ai-usage) section in the root README.
+See [Background and AI usage](../README.md#background-a-2025-attempt-revisited-in-2026) in the root README.
