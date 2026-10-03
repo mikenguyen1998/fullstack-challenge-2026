@@ -1,0 +1,12 @@
+# Shared ignores for every problem (each folder may add its own)
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.idea/
+.vscode/
+.claude/
