@@ -11,6 +11,15 @@ This module handles real-time score updates for a website leaderboard. Users ear
 3. **Real-time updates:** pushes scoreboard changes to clients over Server-Sent Events.
 4. **Anti-cheat:** only real, authenticated, non-replayed actions can increase a score.
 
+## Assumptions
+
+The brief doesn't say how ties are ranked, so these are my decisions. They should be confirmed with product before implementation.
+
+- **Ranking style for tied scores: `1, 2, 2, 4` (standard competition ranking), not `1, 2, 2, 3` (dense ranking).** A user's rank is 1 + the number of users with a strictly higher score. I think `1, 2, 2, 4` is the more reasonable choice: two users sharing 2nd place means nobody is 3rd, which matches how most games and competitions rank, and a rank always tells you how many people are ahead of you.
+- **Order within a tie: whoever reached the score first is listed first.** Instead of a timestamp, each score update gets a number from one database sequence (`achieved_seq`, e.g. the `score_events` id). It always increases, so a smaller `achieved_seq` means the user got there earlier. Unlike timestamps, two updates can never share a value (same second / millisecond), and it doesn't depend on any server's clock.
+- **The leaderboard shows exactly 10 users.** If the 10th and 11th users are tied, both have the same rank, but only the one with the smaller `achieved_seq` is shown.
+- **Scores only increase.** If they could decrease (penalties, reversed actions), "last update" would no longer mean "when this score was reached", and the tie-break would need revisiting.
+
 ## API endpoints
 
 ### 1. Update score
@@ -106,7 +115,7 @@ The server accepts a completion only if **all** of these hold:
 
 If Redis is lost, it's rebuilt from `user_scores`. If step 2 fails after a commit, a reconciliation job (or an outbox table) re-applies it, so the database stays the source of truth.
 
-**Ties:** users with the same score are ordered by who reached it first. Encode that in the sorted-set score as `points * 1e10 + (MAX_TS - timestampSeconds)`, or simply accept Redis's lexicographic order on equal scores and document it.
+**Ties:** see [Assumptions](#assumptions). Tied users share a rank (`1, 2, 2, 4`) and are ordered by `achieved_seq` (smaller = reached the score first). In PostgreSQL that is `ORDER BY score DESC, achieved_seq ASC` with an index on `(score DESC, achieved_seq ASC)`. In the sorted set it can be encoded as `points * 1e10 + (MAX_SEQ - achieved_seq)`.
 
 ## Real-time updates
 
